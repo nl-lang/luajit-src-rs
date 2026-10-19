@@ -1,16 +1,17 @@
 [package]
 name = "luajit-src"
-version = "210.7.4+c6ffc14"
+version = "210.7.4+68cff1b"
 authors = ["Aleksandr Orlenko <zxteam@protonmail.com>"]
 edition = "2024"
-repository = "https://github.com/mlua-rs/luajit-src-rs"
+repository = "https://github.com/nl-lang/luajit-src-rs"
 keywords = ["lua", "luajit"]
 readme = "README.md"
 license = "MIT"
 description = """
-Sources of LuaJIT 2.1 and logic to build it.
+Sources of NL's fork of LuaJIT 2.1, with NL's runtime, and logic to build it.
 """
 exclude = ["/luajit2/doc", "/luajit2/etc"]
+publish = false
 
 [workspace]
 members = ["testcrate"]
