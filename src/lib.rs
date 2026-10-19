@@ -147,6 +147,12 @@ impl Build {
         make.current_dir(build_dir.join("src"));
         make.arg("-e");
 
+        // NL's runtime library, which the VM embeds; a directory given in
+        // the environment wins.
+        if env::var_os("NL_RUNTIME_DIR").is_none() {
+            make.env("NL_RUNTIME_DIR", manifest_dir.join("nl-runtime"));
+        }
+
         match target {
             "x86_64-apple-darwin" if env::var_os("MACOSX_DEPLOYMENT_TARGET").is_none() => {
                 make.env("MACOSX_DEPLOYMENT_TARGET", "10.14");
