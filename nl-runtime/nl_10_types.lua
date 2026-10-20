@@ -278,6 +278,29 @@ do
     }
   end
 
+  -- `declare struct Name = :path`, a Lua class: a value is one when its
+  -- metatable is the class table `get()` reads from the path. A class
+  -- that does not exist yet has no instances, and is looked for again at
+  -- the next test. With `keep` (a path that makes a call, such as gmod's
+  -- `FindMetaTable("Color")`, a C function that ends a trace) the class
+  -- found first is kept in the field `class`, which generated code tests
+  -- inline (crates/nl_ir, lower/types.rs); a path of fields is read at
+  -- every test, so a class table replaced later is seen. Generated code
+  -- builds one per type and file, in the file's type pool.
+  function rt.luaclass(name, get, keep)
+    local t = { name = name }
+    t.test = function(v)
+      local c = t.class
+      if c == nil then
+        c = get()
+        if c == nil then return false end
+        if keep then t.class = c end
+      end
+      return getmetatable(v) == c
+    end
+    return t
+  end
+
   local lua_names = {
     number = "Number", string = "String", boolean = "Bool", table = "Table",
     ["function"] = "Function", userdata = "Userdata", thread = "Thread",
@@ -367,12 +390,12 @@ do
   local host_types = {}
 
   -- The state-wide names that are not host types: Exception
-  -- and its built-in descendants, Range, Task and Regex. Their values are
-  -- set by the files that define them.
+  -- and its built-in descendants, Range, Task, Regex, Time and Duration.
+  -- Their values are set by the files that define them.
   local builtin_names = {
     Exception = true, LuaError = true, TypeError = true, MatchError = true, ConversionError = true,
-    RegexError = true, EncodingError = true, SendError = true, WorkerError = true,
-    Range = true, Task = true, Regex = true,
+    RegexError = true, EncodingError = true, KeyError = true, SendError = true, WorkerError = true,
+    Range = true, Task = true, Regex = true, Time = true, Duration = true,
   }
   local function builtin_type(name)
     if name == "Range" then return I.Range end
