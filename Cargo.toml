@@ -17,5 +17,5 @@ publish = false
 members = ["testcrate"]
 
 [dependencies]
-cc = "1.2"
+cc = "1.11"
 which = "8.0"

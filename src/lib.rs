@@ -288,7 +288,7 @@ impl Build {
         msvcbuild.arg("static");
 
         let cl = cc::windows_registry::find_tool(target, "cl.exe").expect("failed to find cl");
-        for (k, v) in cl.env() {
+        for (k, v) in cl.get_envs() {
             msvcbuild.env(k, v);
         }
 
